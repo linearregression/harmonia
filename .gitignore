@@ -1,0 +1,28 @@
+# Default list of files to ignore
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Cache
+.haste_cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Used by vagrant
+.vagrant
+
+# Compiled client application
+client/build
+
+node_modules
+
+mocha.json
+
+build.metadata.json
+
+.vagrant
