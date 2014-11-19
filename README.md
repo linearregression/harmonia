@@ -10,6 +10,9 @@ for validation and errors, respectively).
 
   - `#constructor`
     - `queue` - The queue to consume messages from
+    - `type` - *optional* 'rpc' or 'worker'; the only major difference is that in rpc mode,
+    the server will return your response data to the requster. In worker mode, the response
+    data will be ignored and the message will just be acknowledged.
   - `#route`
     - `config` - An object of the following format representing a method handler
       - `method` - A string representing the RPC method name
