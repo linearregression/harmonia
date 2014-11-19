@@ -18,7 +18,8 @@
     "boom": "^2.6.0",
     "coyote": "^0.4.0",
     "joi": "^4.8.1",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "chai": "^1.10.0",
