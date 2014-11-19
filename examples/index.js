@@ -6,7 +6,7 @@ var Promise  = require('bluebird');
 var Harmonia = require('harmonia');
 
 // Create a new server that listens to a given queue
-var harmonia = new Harmonia('rpc');
+var harmonia = new Harmonia.Server('rpc');
 
 harmonia.route({
   method : 'math.add',
@@ -62,29 +62,21 @@ harmonia.route({
 // Start the server
 harmonia.listen('amqp://localhost');
 
-// Make some requests with Coyote (simpler client with less boilerplate coming soon!)
-var Coyote = require('coyote');
-var coyote = new Coyote('amqp://localhost', 'REQUEST', 'rpc');
+// Make some requests using the Harmonia client
+var Client = require('./lib/Client');
+var client = new Client('amqp://localhost', 'rpc', 'request');
 
-coyote.on('response', function(response) {
-
-  console.log(response);
-
-});
-
-coyote.on('ready', function() {
-  coyote.write({
-    method : 'math.divide',
-    params : { x : 15, y : 0 }
+client.callMethod('math.add', { x : 15, y : 5 })
+  .then(function(result) {
+    console.log('add', result.content);
   });
 
-  coyote.write({
-    method : 'math.subtract',
-    params : { x : 5, y : 10 }
+client.callMethod('math.subtract', { x : 15, y : 5 })
+  .then(function(result) {
+    console.log('subtract', result.content);
   });
 
-  coyote.write({
-    method : 'math.add',
-    params : { x : 5, y : 10 }
+client.callMethod('math.divide', { x : 15, y : 5 })
+  .then(function(result) {
+    console.log('divide', result.content);
   });
-});
