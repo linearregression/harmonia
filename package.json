@@ -1,6 +1,6 @@
 {
   "name": "harmonia",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "RabbitMQ-backed RPC server",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "bluebird": "^2.3.11",
     "boom": "^2.6.0",
-    "coyote": "^0.3.0",
+    "coyote": "^0.4.0",
     "joi": "^4.8.1",
     "lodash": "^2.4.1"
   },

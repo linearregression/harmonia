@@ -64,7 +64,7 @@ harmonia.listen('amqp://localhost');
 
 // Make some requests with Coyote (simpler client with less boilerplate coming soon!)
 var Coyote = require('coyote');
-var coyote = new Coyote('amqp://localhost', 'REQUEST', 'property');
+var coyote = new Coyote('amqp://localhost', 'REQUEST', 'rpc');
 
 coyote.on('response', function(response) {
 
@@ -74,20 +74,17 @@ coyote.on('response', function(response) {
 
 coyote.on('ready', function() {
   coyote.write({
-    method  : 'math.divide',
-    params  : { x : 15, y : 0 },
-    jsonrpc : '2.0'
+    method : 'math.divide',
+    params : { x : 15, y : 0 }
   });
 
   coyote.write({
-    method  : 'math.subtract',
-    params  : { x : 5, y : 10 },
-    jsonrpc : '2.0'
+    method : 'math.subtract',
+    params : { x : 5, y : 10 }
   });
 
   coyote.write({
-    method  : 'math.add',
-    params  : { x : 5, y : 10 },
-    jsonrpc : '2.0'
+    method : 'math.add',
+    params : { x : 5, y : 10 }
   });
 });
