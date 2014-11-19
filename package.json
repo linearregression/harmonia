@@ -4,9 +4,13 @@
   "description": "RabbitMQ-backed RPC server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha --require chai test/**"
   },
-  "keywords": ["rabbitmq", "rpc", "server"],
+  "keywords": [
+    "rabbitmq",
+    "rpc",
+    "server"
+  ],
   "author": "Colony American Homes",
   "license": "MIT",
   "dependencies": {
@@ -15,5 +19,10 @@
     "coyote": "^0.3.0",
     "joi": "^4.8.1",
     "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "sinon-chai": "^2.6.0"
   }
 }
