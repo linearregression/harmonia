@@ -76,21 +76,18 @@ coyote.on('ready', function() {
   coyote.write({
     method  : 'math.divide',
     params  : { x : 15, y : 0 },
-    id      : require('uuid').v4(),
     jsonrpc : '2.0'
   });
 
   coyote.write({
     method  : 'math.subtract',
     params  : { x : 5, y : 10 },
-    id      : require('uuid').v4(),
     jsonrpc : '2.0'
   });
 
   coyote.write({
     method  : 'math.add',
     params  : { x : 5, y : 10 },
-    id      : require('uuid').v4(),
     jsonrpc : '2.0'
   });
 });

@@ -27,7 +27,6 @@ describe('Request', function() {
         content : {
           method  : 'math.add',
           params  : { x : 1, y : 2 },
-          id      : '1',
           jsonrpc : '2.0'
         },
         properties : {
@@ -39,7 +38,6 @@ describe('Request', function() {
 
       expect(request.headers).to.equal(headers);
       expect(request.properties).to.be.an.object;
-      expect(request.id).to.equal('1');
       expect(request.params.x).to.equal(1);
       expect(request.content).to.be.an.object;
       expect(request.method).to.equal('math.add');
