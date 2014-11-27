@@ -40,7 +40,6 @@ describe('Request', function() {
       expect(request.properties).to.be.an.object;
       expect(request.params.x).to.equal(1);
       expect(request.content).to.be.an.object;
-      expect(request.method).to.equal('math.add');
     });
   });
 });
