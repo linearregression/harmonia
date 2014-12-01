@@ -52,6 +52,17 @@ This module should export an object with the following properties:
   - `#setHeaders` - set the response headers
     - `headers` - object
 
+### Client
+  - `#constructor`
+    - `connection` - an established AMQP connection (a new channel will be created on this connection)
+    - `type` - one of `request`, `push`, or `publish`
+  - `#createClient` - client factory; returns a promise that will be resolved with a client instance
+    - `amqpUrl` - used to create a connection to the server
+    - `type` - passed to `Client#constructor`
+  - `#call` - make an rpc call
+    - `method` - the rpc method to call
+    - `params` - the parameters to the rpc method
+
 ## Examples
 
 See the `examples` directory
