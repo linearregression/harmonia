@@ -24,19 +24,21 @@ harmonia.route({
 harmonia.listen('amqp://localhost');
 
 // Make some requests using the Harmonia client
-var client = Harmonia.Client.createClient('amqp://localhost', 'request', 'math.add');
+var client = Harmonia.Client.createClient('amqp://localhost', 'request');
 
-client.call('math.add', { x : 15, y : 5 })
+client.then(function(client) {
+  client.call('math.add', { x : 15, y : 5 })
   .then(function(result) {
     console.log('add', result.content);
   });
 
-client.call('math.subtract', { x : 15, y : 5 })
+  client.call('math.subtract', { x : 15, y : 5 })
   .then(function(result) {
     console.log('subtract', result.content);
   });
 
-client.call('math.divide', { x : 15, y : 5 })
+  client.call('math.divide', { x : 15, y : 5 })
   .then(function(result) {
     console.log('divide', result.content);
   });
+});
