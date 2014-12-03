@@ -1,6 +1,6 @@
 {
   "name": "harmonia",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "RabbitMQ-backed RPC server",
   "main": "index.js",
   "scripts": {
