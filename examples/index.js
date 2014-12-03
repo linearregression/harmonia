@@ -29,7 +29,11 @@ harmonia.route({
 });
 
 // Start the server
-harmonia.listen(amqpUrl);
+harmonia.listen(amqpUrl, {
+  clientProperties : {
+    Application : 'Harmonia Example'
+  }
+});
 
 // Make some requests using the Harmonia client
 var disposable = Harmonia.Client.createClient(amqpUrl, 'request');
