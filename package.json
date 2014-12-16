@@ -14,9 +14,9 @@
   "author": "Colony American Homes",
   "license": "MIT",
   "dependencies": {
+    "amqplib": "^0.3.0",
     "bluebird": "^2.3.11",
     "boom": "^2.6.0",
-    "coyote": "^0.9.1",
     "joi": "^5.0.1",
     "lodash": "^2.4.1",
     "uuid": "^2.0.1"
