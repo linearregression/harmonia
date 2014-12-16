@@ -9,31 +9,20 @@ for validation and errors, respectively).
 ### Harmonia
 
   - `#constructor`
-    - `type` - *optional* 'rpc' or 'worker'; the only major difference is that in rpc mode,
-    the server will return your response data to the requster. In worker mode, the response
-    data will be ignored and the message will just be acknowledged.
+    - `options` - a configuration object
+      - `amqpUrl` - e.g. `amqp://username:password@localhost:5672`
+      - `socketOptions` - any socket option that can be passed to [`amqplib.connect`](http://www.squaremobius.net/amqp.node/doc/channel_api.html)
   - `#route`
-    - `config` - An object of the following format representing a method handler
+    - `route` - An object of the following format representing a method handler
       - `method` - A string representing the RPC method name (will also be the queue name)
-      - `module` - Path to the module that will handle these requests. See `Handler` below
-      - `bootstrap` - *optional* Path to a script that will be required before the handler module
-      - `concurrency` - *optional* Maximum number of child processes that will be run at once (default 1)
+      - `concurrency` - This is the AMQP prefetch (how many messages will be delivered from the queue at once)
+      - `response` - *optional* Indicates that this handler is a response queue (for being used as a replyTo queue). *Default: false*
+      - `config` - an object containing the configuration for the handler
+        - `onError` - one of `ack`, `nack`, or `requeue`. This is the action taken on a message when a runtime error occurs that reaches Harmonia
+        - `handler` - your method handler. This function must return a promise. Receives a `Request` object as its only parameter.
+        - `validate` - a `Joi` object to validate each incoming message
   - `#listen` - Start listening to the configured queues on the given AMQP server
-    - `amqpUrl` - e.g. `amqp://username:password@localhost:5672`
-  - `#pause` - Pause receipt of new requests (any requests in progress will be completed)
-  - `#resume` - Resume handling of new requests
-  - `#shutdown` - Stop handling new messages and disconnect
-
-### Handler
-This module will be executed in a child process and thus, will not have any resources (database, network, files, etc.)
-that have been set up in the master process. It is recommended you use a bootstrap script to set up any resources a
-handler might need (to separate the handler code from resource setup).
-
-This module should export an object with the following properties:
-  - `handler` - a function that will be called to handle a method call. It will be passed two arguments and should return either a `Response` or a Promise.
-    - `request` - see `Request`
-    - `response` - see `Response`
-  - `validate` - a `Joi` schema that will be used to validate the parameters passed to the method on each call
+  - `#shutdown` - Stop handling new messages and disconnect (any requests in progress will be completed)
 
 ### Request
 *Note:* this class has no public methods. Its properties should not be mutated.
@@ -46,22 +35,31 @@ This module should export an object with the following properties:
 
 ### Response
 
-  - `#constructor` - can be called with or without `new`, accepts one param
+You may optionally return a response object from your handler in order to supply response headers or to nack/requeue a message.
+
+  - `#constructor`
     - `result` - Must be a stringifiable object or scalar
   - `#setResult` - override the result previously set
   - `#setHeaders` - set the response headers
     - `headers` - object
+  - `#nack` - indicates that the message will be nacked (no response will be sent)
+  - `#requeue` - indicates that the message will be requeued (no response will be sent)
 
 ### Client
   - `#constructor`
-    - `connection` - an established AMQP connection (a new channel will be created on this connection)
-    - `type` - one of `request`, `push`, or `publish`
-  - `#createClient` - client factory; returns a promise that will be resolved with a client instance
+    - `channel` - an established AMQP channel
+  - `#createClient` - client factory; gives you a client to work with and disposes it (and the channel and connection when finished)
     - `amqpUrl` - used to create a connection to the server
-    - `type` - passed to `Client#constructor`
-  - `#call` - make an rpc call
+    - `callback` - a function that will receive the established `client` object. **Must return a promise. The client will be disposed when this promise is resolved.**
+  - `#createConnection` - create a disposable AMQP connection (for use with Bluebird's `Promise.using`)
+  - `#createChannel` - creates a disposable channel on the given connection (again, for use with Bluebird's `Promise.using`)
+  - `#awaitMethod` - RPC-style method call. **DO NOT use this method for multiple calls to the same method**.
     - `method` - the rpc method to call
     - `params` - the parameters to the rpc method
+    - `options` - any options that can be sent to amqplib's `Channel#sendToQueue`
+  - `#call` - **deprecated** - alias of `#awaitMethod`
+  - `#awaitMethodBulk` - same as `awaitMethod` except `params` is an array of objects, each item in the array being a separate invokation
+  - `#invokeMethod` - invoke a method, but don't wait for a response (promise resolves when the message broker has received the message)
 
 ## Examples
 
