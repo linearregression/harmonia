@@ -1,4 +1,10 @@
-### 0.8.x -> 0.9.x
+### 1.0.0 -> 1.0.1
+
+- `[FIXED]` `Client#invokeMethod` returns a Bluebird promise
+- `[FIXED]` Undefined error when `Client.createClient` promise does not return anything
+- `[FIXED]` Error responses should have an `error` key as the top level
+
+### 0.8.x -> 1.0.0
 
 Changes
 
