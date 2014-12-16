@@ -155,4 +155,5 @@ Harmonia.Client.createClient(amqpUrl, function(client) {
 }).then(function() {
   // At this point, the client is disposed and all of our messages have been sent,
   // and any replies (if we are expecting them) will have been received
+  harmonia.shutdown();
 });
