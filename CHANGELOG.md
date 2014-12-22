@@ -1,3 +1,7 @@
+### 1.0.2
+- `[FIXED]` Issue where errors were being formatted incorrectly by handlers
+- `[MISC]` Miscellaneous refactoring (no public changes)
+
 ### 1.0.0 -> 1.0.1
 
 - `[FIXED]` `Client#invokeMethod` returns a Bluebird promise
