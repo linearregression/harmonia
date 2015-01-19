@@ -1,3 +1,7 @@
+### 2.0.1
+
+- `[FIXED]` Fixed a regression where we stopped auto-replying with the promise's resolved value
+
 ### 2.0.0
 
 - `[CHANGED]` Send header `harmonia-message=1.0` with all outbound messages
