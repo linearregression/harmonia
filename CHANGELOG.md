@@ -1,3 +1,15 @@
+### 2.0.0
+
+- `[CHANGED]` Send header `harmonia-message=1.0` with all outbound messages
+- `[CHANGED]` Message payload is now just the params at the top-level; does not include method
+- `[CHANGED]` Response API no longer auto-replies with promise's resolved value; instead, you
+  should call `request.reply()` with the value you want to send.
+- `[ADDED]` Ability to specify a dead-letter exchange when creating a queue
+- `[ADDED]` Client always specifies the message ID property when sending a message
+- `[ADDED]` Ability to bind a queue to an exchange (asserts both the queue and the exchange)
+
+Upgrade guide: https://github.com/colonyamerican/harmonia/commit/e2626600c4f1c1238fa1d7697ee442d25ba7b394
+
 ### 1.0.2
 - `[FIXED]` Issue where errors were being formatted incorrectly by handlers
 - `[MISC]` Miscellaneous refactoring (no public changes)
