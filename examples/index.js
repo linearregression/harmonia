@@ -37,7 +37,7 @@ harmonia.route({
   config : {
     handler : function(request) {
       return Promise.delay(500).then(function() {
-        return request.reply(request.params.x - request.params.y);
+        return request.params.x - request.params.y;
       });
     },
     validate : Joi.object().keys({
