@@ -22,7 +22,7 @@ harmonia.route({
   concurrency : 50,
   config : {
     handler : function(request) {
-      return request.params.x + request.params.y;
+      return request.reply(request.params.x + request.params.y)
     },
     validate : Joi.object().keys({
       x : Joi.number(),
@@ -37,7 +37,7 @@ harmonia.route({
   config : {
     handler : function(request) {
       return Promise.delay(500).then(function() {
-        return request.params.x - request.params.y;
+        return request.reply(request.params.x - request.params.y);
       });
     },
     validate : Joi.object().keys({
@@ -56,7 +56,7 @@ harmonia.route({
         throw require('boom').badRequest('Divide by 0 error');
       }
 
-      return new Harmonia.Response(request.params.x / request.params.y).setHeaders({
+      return request.reply(request.params.x / request.params.y, {
         'Powered-By' : 'Harmonia'
       });
     },
@@ -72,7 +72,7 @@ harmonia.route({
   concurrency : 50,
   config : {
     handler  : function(request) {
-      return request.params.x * request.params.y;
+      return request.reply(request.params.x * request.params.y);
     },
     validate : Joi.object().keys({
       x : Joi.number(),
@@ -87,7 +87,8 @@ harmonia.route({
   concurrency : 50,
   config : {
     handler : function(request) {
-      console.log('result-queue', request);
+      console.log('result-queue', request.content);
+      return request.ack();
     }
   }
 });
@@ -133,7 +134,7 @@ Harmonia.Client.createClient(amqpUrl, function(client) {
       // results[1].result = 7
       // ...
       //
-      console.log('bulkResult', _.pluck(results, 'result'));
+      console.log('bulkResult', _.pluck(results, 'content'));
     });
   }).then(function() {
     // If your application is stateless, or you simply don't care about the result
