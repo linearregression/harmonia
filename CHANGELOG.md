@@ -1,3 +1,6 @@
+### 2.0.2
+- `[FIXED]` Fixed a bug where messages with no reply-to that were automatically handled by Harmonia (rather than explicitly acked/nacked/requeued by the handler) were never actually acked.
+
 ### 2.0.1
 
 - `[FIXED]` Fixed a regression where we stopped auto-replying with the promise's resolved value
