@@ -1,3 +1,6 @@
+### 2.0.3
+- `[FIXED]` Fixed a bug where handlers resolving with a non-stringifyable value caused messages to never get acked.
+
 ### 2.0.2
 - `[FIXED]` Fixed a bug where messages with no reply-to that were automatically handled by Harmonia (rather than explicitly acked/nacked/requeued by the handler) were never actually acked.
 
