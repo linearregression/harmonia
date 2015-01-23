@@ -1,3 +1,12 @@
+### 2.1.0
+- `[FIXED]` Improved handling of validation errors (#17)
+- `[FIXED]` The client now rejects promises for failed calls using `awaitMethod` (#20)
+- `[ADDED]` The client now has an option for default timeouts when using `awaitMethod` (#20)
+  - The promise will be rejected after the timeout period; the message TTL will be set in RMQ as well
+- `[ADDED]` A route's `validate` can now be a function, allowing you to use JSON Schema or other
+  programmatic validation of messages. The function should return true or nothing at all; any other
+  result will be considered a validation failure.
+
 ### 2.0.3
 - `[FIXED]` Fixed a bug where handlers resolving with a non-stringifyable value caused messages to never get acked.
 
