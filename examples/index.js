@@ -24,10 +24,15 @@ harmonia.route({
     handler : function(request) {
       return request.reply(request.params.x + request.params.y)
     },
-    validate : Joi.object().keys({
-      x : Joi.number(),
-      y : Joi.number()
-    })
+    validate : function(request) {
+      if (typeof request.params.x !== 'number' || typeof request.params.y !== 'number') {
+        // this would also be valid:
+        // throw new Error('Invalid parameter type');
+        return 'Invalid parameter type';
+      }
+
+      // returning true is optional here
+    }
   }
 });
 
@@ -83,7 +88,6 @@ harmonia.route({
 
 harmonia.route({
   method : 'math.result.add',
-  response : true,
   concurrency : 50,
   config : {
     handler : function(request) {
@@ -136,6 +140,20 @@ Harmonia.Client.createClient(amqpUrl, function(client) {
       //
       console.log('bulkResult', _.pluck(results, 'content'));
     });
+  }).then(function() {
+    // Examples of error responses
+
+    return client.awaitMethod('math.add', { x : 'a', y : 'b' })
+      .then(function(result) {
+        console.log('error', result);
+      });
+  }).then(function() {
+    // Methods using Joi validation are a bit more descriptive, but you could also
+    // use json-schema (or anything!)
+    return client.awaitMethod('math.subtract', { x : 'b' })
+      .then(function(result) {
+        console.log('error', result);
+      });
   }).then(function() {
     // If your application is stateless, or you simply don't care about the result
     // of a method call, you can use Client#invokeMethod, which will resolve immediately

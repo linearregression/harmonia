@@ -20,7 +20,9 @@ for validation and errors, respectively).
       - `config` - an object containing the configuration for the handler
         - `onError` - one of `ack`, `nack`, or `requeue`. This is the action taken on a message when a runtime error occurs that reaches Harmonia
         - `handler` - your method handler. This function must return a promise. Receives a `Request` object as its only parameter.
-        - `validate` - a `Joi` object to validate each incoming message
+        - `validate` - can either be a `Joi` object or a function (receives the incoming message as its only parameter)
+          - if a function is provided, it should return true or undefined to indicate successful validation. Throwing any error
+            or returning any value other than true will be treated as a validation failure.
   - `#listen` - Start listening to the configured queues on the given AMQP server
   - `#shutdown` - Stop handling new messages and disconnect (any requests in progress will be completed)
 
