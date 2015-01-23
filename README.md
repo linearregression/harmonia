@@ -15,41 +15,27 @@ for validation and errors, respectively).
   - `#route`
     - `route` - An object of the following format representing a method handler
       - `method` - A string representing the RPC method name (will also be the queue name)
+      - `bindToExcahnges` - An array of objects describing exchanges to bind to. **Warning:** the exchange will be
+        asserted, so make sure any existing exchanges on your RMQ server have matching settings.
+        - `exchange` - the name of the exchange to bind your queue to
+        - `type` - the type of the exchange (`direct`, `fanout`, `topic`, `headers`)
+        - `routingKey` - the routing key to bind to the exchange with
+      - `deadLetterExchange` - the dead letter exchange for this queue
       - `concurrency` - This is the AMQP prefetch (how many messages will be delivered from the queue at once)
-      - `response` - *optional* Indicates that this handler is a response queue (for being used as a replyTo queue). *Default: false*
       - `config` - an object containing the configuration for the handler
         - `onError` - one of `ack`, `nack`, or `requeue`. This is the action taken on a message when a runtime error occurs that reaches Harmonia
         - `handler` - your method handler. This function must return a promise. Receives a `Request` object as its only parameter.
         - `validate` - can either be a `Joi` object or a function (receives the incoming message as its only parameter)
           - if a function is provided, it should return true or undefined to indicate successful validation. Throwing any error
             or returning any value other than true will be treated as a validation failure.
+        - `invalidMessageHandler` - allows you to react to invalid messages (or override their default handling)
   - `#listen` - Start listening to the configured queues on the given AMQP server
   - `#shutdown` - Stop handling new messages and disconnect (any requests in progress will be completed)
-
-### Request
-*Note:* this class has no public methods. Its properties should not be mutated.
-
-  - `headers` - an object containing the AMQP headers
-  - `properties` - an object containing the AMQP message properties
-  - `content` - an object containing the raw message content
-  - `method` - the requested method
-  - `params` - the request params
-
-### Response
-
-You may optionally return a response object from your handler in order to supply response headers or to nack/requeue a message.
-
-  - `#constructor`
-    - `result` - Must be a stringifiable object or scalar
-  - `#setResult` - override the result previously set
-  - `#setHeaders` - set the response headers
-    - `headers` - object
-  - `#nack` - indicates that the message will be nacked (no response will be sent)
-  - `#requeue` - indicates that the message will be requeued (no response will be sent)
 
 ### Client
   - `#constructor`
     - `channel` - an established AMQP channel
+    - `options` - an object. Currently, the only option is `timeout` for RPC-style calls (timeout in ms or false for no timeout)
   - `#createClient` - client factory; gives you a client to work with and disposes it (and the channel and connection when finished)
     - `amqpUrl` - used to create a connection to the server
     - `callback` - a function that will receive the established `client` object. **Must return a promise. The client will be disposed when this promise is resolved.**
@@ -62,6 +48,14 @@ You may optionally return a response object from your handler in order to supply
   - `#call` - **deprecated** - alias of `#awaitMethod`
   - `#awaitMethodBulk` - same as `awaitMethod` except `params` is an array of objects, each item in the array being a separate invokation
   - `#invokeMethod` - invoke a method, but don't wait for a response (promise resolves when the message broker has received the message)
+
+**Note on timeouts:** you can set a default timeout by overriding `Client.defaultTimeout`.
+The default timeout is initialized to false in order to preserve backward-compatibility, but it
+is highly recommended to set this to a value, even if it is long. If a remote service nacks a message
+or simply fails to reply, you **will** leak memory, both in your Harmonia application and on the
+RabbitMQ server (a reply queue, a channel, and a connection that will not be cleaned up until your
+application restarts).
+
 
 ## Examples
 

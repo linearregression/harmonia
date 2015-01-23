@@ -100,7 +100,13 @@ harmonia.route({
 // Start the server
 harmonia.listen();
 
-Harmonia.Client.createClient(amqpUrl, function(client) {
+// The client does not have a default timeout. You can set the default for all
+// clients:
+Harmonia.Client.defaultTimeout = 10000;
+
+// Or you can override this default on a per-client basis. The options object
+// is optional.
+Harmonia.Client.createClient(amqpUrl, { timeout : 5000 }, function(client) {
   // You must return a promise from this method or the conection and channel
   // will be disposed before you can do anything with them
 
@@ -144,15 +150,15 @@ Harmonia.Client.createClient(amqpUrl, function(client) {
     // Examples of error responses
 
     return client.awaitMethod('math.add', { x : 'a', y : 'b' })
-      .then(function(result) {
-        console.log('error', result);
+      .catch(function(result) {
+        console.log('error', result.content.error.message);
       });
   }).then(function() {
     // Methods using Joi validation are a bit more descriptive, but you could also
     // use json-schema (or anything!)
     return client.awaitMethod('math.subtract', { x : 'b' })
-      .then(function(result) {
-        console.log('error', result);
+      .catch(function(result) {
+        console.log('error', result.content.error.message);
       });
   }).then(function() {
     // If your application is stateless, or you simply don't care about the result
@@ -170,7 +176,14 @@ Harmonia.Client.createClient(amqpUrl, function(client) {
     return client.invokeMethod('math.add', { x : 15, y : 5 }, {
       replyTo : 'math.result.add'
     });
-  });
+  }).then(function() {
+
+    // This method never responds! :(
+    return client.awaitMethod('math.result.add', {})
+      .catch(function(err) {
+        console.log('timed out!');
+      });
+  })
 }).then(function() {
   // At this point, the client is disposed and all of our messages have been sent,
   // and any replies (if we are expecting them) will have been received
